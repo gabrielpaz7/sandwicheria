@@ -21,6 +21,7 @@ public class AplicacionView extends javax.swing.JFrame {
      */
     public AplicacionView() {
         initComponents();
+        this.setLocationRelativeTo(null);
         setIcon();
         setVisible(true);
         
