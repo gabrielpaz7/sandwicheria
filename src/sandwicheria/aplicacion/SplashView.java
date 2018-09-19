@@ -13,13 +13,13 @@ import sandwicheria.aplicacion.AplicacionView;
  *
  * @author Gabriel
  */
-public class Splash extends javax.swing.JFrame implements Runnable{
+public class SplashView extends javax.swing.JFrame implements Runnable{
 
     Thread t;
     /**
      * Creates new form Splash
      */
-    public Splash() {
+    public SplashView() {
         initComponents();
     }
     
@@ -28,11 +28,11 @@ public class Splash extends javax.swing.JFrame implements Runnable{
         try {
             this.setLocationRelativeTo(null);
             this.setVisible(true);
-            t.sleep(5000);
+            t.sleep(2000);
             this.dispose();
-            new AplicacionView();   
+            new LoginView();   
         } catch (InterruptedException ex) {
-            Logger.getLogger(Splash.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SplashView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -115,20 +115,21 @@ public class Splash extends javax.swing.JFrame implements Runnable{
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Splash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SplashView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Splash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SplashView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Splash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SplashView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Splash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SplashView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Splash().setVisible(true);
+                new SplashView().setVisible(true);
             }
         });
     }

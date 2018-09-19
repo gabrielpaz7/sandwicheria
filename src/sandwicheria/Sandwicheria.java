@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import sandwicheria.aplicacion.Splash;
+import sandwicheria.aplicacion.SplashView;
 
 /**
  *
@@ -34,7 +34,7 @@ public class Sandwicheria {
             Logger.getLogger(Sandwicheria.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        new Thread (new Splash()).start();
+        new Thread (new SplashView()).start();
     }
     
 }
