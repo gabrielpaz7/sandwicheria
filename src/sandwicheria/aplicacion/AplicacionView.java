@@ -4,11 +4,17 @@
  */
 package sandwicheria.aplicacion;
 
+import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JMenuBar;
 import javax.swing.JDesktopPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.plaf.DesktopPaneUI;
+import sandwicheria.pedido.CrearPedidoView;
 
 /**
  *
@@ -24,6 +30,8 @@ public class AplicacionView extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         setIcon();
         setVisible(true);
+        
+        crearMenus();
         
     }
     
@@ -47,6 +55,142 @@ public class AplicacionView extends javax.swing.JFrame {
     
     public JDesktopPane getDesktopPaneParent(){
         return this.getDesktopPane();
+    }
+    
+    public void crearMenus(){
+        crearMenuInicio();
+        crearMenuPedido();
+        //crearMenuUsuarios();
+        crearMenuAyuda();
+    }
+    
+    public void crearMenuInicio(){
+        JMenu menuInicio = new JMenu();
+        menuInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/house_16.png"))); // NOI18N
+        menuInicio.setText("Inicio   ");
+
+        /*
+        JMenuItem itemIniciarSesion = new JMenuItem();
+        itemIniciarSesion.setText("Iniciar Sesion");
+        itemIniciarSesion.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        
+        menuInicio.add(itemIniciarSesion);
+        menuInicio.addSeparator();
+        */
+        
+        JMenuItem itemSalir= new JMenuItem();
+        itemSalir.setText("Salir");
+        itemSalir.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });        
+
+        
+        menuInicio.add(itemSalir); 
+        
+        this.getMainMenuBar().add(menuInicio);
+    }
+    
+    public void crearMenuPedido(){
+        JMenu menuInicio = new JMenu();
+        menuInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/food_16.png"))); // NOI18N
+        menuInicio.setText("Pedido   ");
+
+        /*
+        JMenuItem itemIniciarSesion = new JMenuItem();
+        itemIniciarSesion.setText("Iniciar Sesion");
+        itemIniciarSesion.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        
+        menuInicio.add(itemIniciarSesion);
+        menuInicio.addSeparator();
+        */
+        
+        JMenuItem itemCrearPedido= new JMenuItem();
+        itemCrearPedido.setText("Crear Pedido");
+        itemCrearPedido.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CrearPedidoView window = new CrearPedidoView();
+                
+                
+                
+                getDesktopPane().add(window);
+                
+                /*Centrar JInternalFrame y Agregar al DesktopPane*/
+                Dimension desktopSize = getSize();
+                Dimension jInternalFrameSize = window.getSize();
+                window.setLocation((desktopSize.width - jInternalFrameSize.width)/2, (desktopSize.height- jInternalFrameSize.height)/2);
+                
+                
+                window.setVisible(true);
+            }
+        });        
+
+        
+        menuInicio.add(itemCrearPedido); 
+        
+        this.getMainMenuBar().add(menuInicio);
+    }
+    
+    public void crearMenuAyuda(){
+        JMenu menuAyuda = new JMenu();
+        menuAyuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/help_16.png"))); // NOI18N
+        menuAyuda.setText("Ayuda   ");
+
+        //Crear Paquete
+        JMenuItem itemAcerca = new JMenuItem();
+        itemAcerca.setText("Acerca de...");
+        itemAcerca.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AcercaView window = new AcercaView();
+                
+                
+                
+                getDesktopPane().add(window);
+                
+                /*Centrar JInternalFrame y Agregar al DesktopPane*/
+                Dimension desktopSize = getSize();
+                Dimension jInternalFrameSize = window.getSize();
+                window.setLocation((desktopSize.width - jInternalFrameSize.width)/2, (desktopSize.height- jInternalFrameSize.height)/2);
+                
+                
+                window.setVisible(true);
+            }
+        });
+        
+        menuAyuda.add(itemAcerca);
+        
+         
+        JMenuItem itemReset = new JMenuItem();
+        itemReset.setText("Reiniciar Repositorio");
+        itemReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Repositorio.Iniciar();
+            }
+        });
+        
+        menuAyuda.add(itemReset);
+        
+        getMainMenuBar().add(menuAyuda);
     }
 
 

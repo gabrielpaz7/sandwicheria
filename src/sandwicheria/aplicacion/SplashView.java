@@ -5,9 +5,11 @@
  */
 package sandwicheria.aplicacion;
 
+import sandwicheria.aplicacion.login.LoginView;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sandwicheria.aplicacion.AplicacionView;
+import sandwicheria.aplicacion.login.LoginPresenter;
 
 /**
  *
@@ -30,7 +32,10 @@ public class SplashView extends javax.swing.JFrame implements Runnable{
             this.setVisible(true);
             t.sleep(2000);
             this.dispose();
-            new LoginView();   
+            
+            LoginView view = new LoginView();
+            view.setPresenter(new LoginPresenter(view));
+            
         } catch (InterruptedException ex) {
             Logger.getLogger(SplashView.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -55,9 +60,9 @@ public class SplashView extends javax.swing.JFrame implements Runnable{
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/sandwich-300.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/food_sandwich_128.png"))); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel2.setText("Sandwicheria");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -65,12 +70,11 @@ public class SplashView extends javax.swing.JFrame implements Runnable{
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(94, 94, 94)
+                        .addGap(13, 13, 13)
                         .addComponent(jLabel2)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -78,10 +82,10 @@ public class SplashView extends javax.swing.JFrame implements Runnable{
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
