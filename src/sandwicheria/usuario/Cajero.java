@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sandwicheria.aplicacion.usuario;
+package sandwicheria.usuario;
 
 /**
  *
@@ -13,11 +13,12 @@ public class Cajero extends Usuario{
     
     Turno turno;
 
-    public Cajero(String nombreApellido, String usuario, String password, Turno turno) {
-        super(nombreApellido, usuario, password);
+    public Cajero(int legajo, String nombreApellido, String usuario, String password, Turno turno) {
+        super(legajo, nombreApellido, usuario, password);
         this.turno = turno;
     }
 
+    
     public Turno getTurno() {
         return turno;
     }

@@ -5,23 +5,38 @@
 package sandwicheria.aplicacion;
 
 import java.awt.Dimension;
+import java.awt.List;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.swing.Box;
+import javax.swing.Icon;
 import javax.swing.JMenuBar;
 import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.plaf.DesktopPaneUI;
+import sandwicheria.Presenter;
+import sandwicheria.View;
 import sandwicheria.pedido.CrearPedidoView;
+import sandwicheria.pedido.*;
+import sandwicheria.persistencia.Repositorio;
+import sandwicheria.persistencia.Session;
 
 /**
  *
  * @author Cesar
  */
-public class AplicacionView extends javax.swing.JFrame {
+public class AplicacionView extends javax.swing.JFrame implements View{
 
+    AplicacionView parentFrame = this;
+    
+    Presenter presenter;
     /**
      * Creates new form TerminalAplicacionView
      */
@@ -34,6 +49,7 @@ public class AplicacionView extends javax.swing.JFrame {
         crearMenus();
         
     }
+
     
 
     public JMenuBar getMainMenuBar(){
@@ -62,136 +78,143 @@ public class AplicacionView extends javax.swing.JFrame {
         crearMenuPedido();
         //crearMenuUsuarios();
         crearMenuAyuda();
+        crearMenuUsuario();
+    }
+    
+    public JMenu crearMenu(String menuName, String iconPath, ArrayList<JMenuItem> items){
+        ///sandwicheria/resources/house_16.png
+        JMenu menu = new JMenu();
+        Icon icon = new javax.swing.ImageIcon(getClass().getResource(iconPath));
+        menu.setIcon(icon); // NOI18N
+        menu.setText(menuName + "   ");
+        
+        //subitems
+        if(items != null && items.size() > 0){
+            Iterator<JMenuItem> iter = items.iterator();
+            while(iter.hasNext()){
+                JMenuItem item = (JMenuItem) iter.next();
+                //menu.addSeparator();
+                menu.add(item); 
+            }
+        }
+
+        this.getMainMenuBar().add(menu);
+        
+        return menu;
+    }
+    
+    public void crearVentana(JInternalFrame iframe){
+                getDesktopPane().add(iframe);
+                /*Centrar JInternalFrame y Agregar al DesktopPane*/
+                Dimension desktopSize = getSize();
+                Dimension jInternalFrameSize = iframe.getSize();
+                iframe.setLocation((desktopSize.width - jInternalFrameSize.width)/2, (desktopSize.height- jInternalFrameSize.height)/2);
+
+                iframe.setVisible(true);
     }
     
     public void crearMenuInicio(){
-        JMenu menuInicio = new JMenu();
-        menuInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/house_16.png"))); // NOI18N
-        menuInicio.setText("Inicio   ");
-
-        /*
-        JMenuItem itemIniciarSesion = new JMenuItem();
-        itemIniciarSesion.setText("Iniciar Sesion");
-        itemIniciarSesion.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        });
         
-        menuInicio.add(itemIniciarSesion);
-        menuInicio.addSeparator();
-        */
+        ArrayList<JMenuItem> items = new ArrayList<JMenuItem>();
         
-        JMenuItem itemSalir= new JMenuItem();
-        itemSalir.setText("Salir");
-        itemSalir.addActionListener(new ActionListener() {
+        JMenuItem item= new JMenuItem();
+        item.setText("Salir");
+        item.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
-        });        
-
+        });
+        items.add(item);
         
-        menuInicio.add(itemSalir); 
-        
-        this.getMainMenuBar().add(menuInicio);
+        crearMenu("Inicio", "/sandwicheria/resources/house_16.png", items);
     }
     
     public void crearMenuPedido(){
-        JMenu menuInicio = new JMenu();
-        menuInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/food_16.png"))); // NOI18N
-        menuInicio.setText("Pedido   ");
+        //List Menu Items
+        ArrayList<JMenuItem> items = new ArrayList<JMenuItem>();
+        JMenuItem item= new JMenuItem();
 
-        /*
-        JMenuItem itemIniciarSesion = new JMenuItem();
-        itemIniciarSesion.setText("Iniciar Sesion");
-        itemIniciarSesion.addActionListener(new ActionListener() {
+        //CREAR PEDIDO
+        item.setText("Crear Pedido");
+        item.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                Pedido model = new Pedido();
+                CrearPedidoView view = new CrearPedidoView();
+                Presenter presenter = new CrearPedidoPresenter(view, model);
+                view.setParentFrame(parentFrame);
+                crearVentana(view);
+                
             }
         });
+        items.add(item);
         
-        menuInicio.add(itemIniciarSesion);
-        menuInicio.addSeparator();
-        */
+        //CREAR
         
-        JMenuItem itemCrearPedido= new JMenuItem();
-        itemCrearPedido.setText("Crear Pedido");
-        itemCrearPedido.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CrearPedidoView window = new CrearPedidoView();
-                
-                
-                
-                getDesktopPane().add(window);
-                
-                /*Centrar JInternalFrame y Agregar al DesktopPane*/
-                Dimension desktopSize = getSize();
-                Dimension jInternalFrameSize = window.getSize();
-                window.setLocation((desktopSize.width - jInternalFrameSize.width)/2, (desktopSize.height- jInternalFrameSize.height)/2);
-                
-                
-                window.setVisible(true);
-            }
-        });        
-
-        
-        menuInicio.add(itemCrearPedido); 
-        
-        this.getMainMenuBar().add(menuInicio);
+        //Menu
+        crearMenu("Pedido", "/sandwicheria/resources/food_16.png", items);
     }
     
     public void crearMenuAyuda(){
-        JMenu menuAyuda = new JMenu();
-        menuAyuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/help_16.png"))); // NOI18N
-        menuAyuda.setText("Ayuda   ");
-
-        //Crear Paquete
-        JMenuItem itemAcerca = new JMenuItem();
-        itemAcerca.setText("Acerca de...");
-        itemAcerca.addActionListener(new ActionListener() {
+        ArrayList<JMenuItem> items = new ArrayList<JMenuItem>();       
+        JMenuItem item;
+        
+        // ACERCA DE...
+        item = new JMenuItem();
+        item.setText("Acerca de...");
+        item.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                AcercaView window = new AcercaView();
+                AcercaView view = new AcercaView();
                 
-                
-                
-                getDesktopPane().add(window);
-                
-                /*Centrar JInternalFrame y Agregar al DesktopPane*/
-                Dimension desktopSize = getSize();
-                Dimension jInternalFrameSize = window.getSize();
-                window.setLocation((desktopSize.width - jInternalFrameSize.width)/2, (desktopSize.height- jInternalFrameSize.height)/2);
-                
-                
-                window.setVisible(true);
+                crearVentana(view);
             }
         });
         
-        menuAyuda.add(itemAcerca);
+        items.add(item);
         
-         
-        JMenuItem itemReset = new JMenuItem();
-        itemReset.setText("Reiniciar Repositorio");
-        itemReset.addActionListener(new ActionListener() {
+        //REINICIAR REPO
+        item = new JMenuItem();
+        item.setText("Reiniciar Repositorio");
+        item.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Repositorio.Iniciar();
             }
         });
         
-        menuAyuda.add(itemReset);
+        items.add(item);
         
-        getMainMenuBar().add(menuAyuda);
+        crearMenu("Ayuda", "/sandwicheria/resources/help_16.png", items);
+
     }
+    
+    private void crearMenuUsuario(){
+        ArrayList<JMenuItem> items = new ArrayList<JMenuItem>();
+        
+        JMenuItem item= new JMenuItem();
+        item.setText("cerrar sesion");
+        item.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+        items.add(item);
+        
+        
+        menuBar.add(Box.createHorizontalGlue());
+        crearMenu(Session.getUsuario().getNombreApellido(), "/sandwicheria/resources/user_16.png", items)
+                .setBackground(java.awt.SystemColor.activeCaptionBorder);
+    }
+            
+            
 
 
     /**
@@ -205,6 +228,7 @@ public class AplicacionView extends javax.swing.JFrame {
 
         desktopPane = new javax.swing.JDesktopPane();
         statusBar = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -231,6 +255,8 @@ public class AplicacionView extends javax.swing.JFrame {
             statusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 11, Short.MAX_VALUE)
         );
+
+        jLabel1.setText("jLabel1");
 
         menuBar.setMaximumSize(new java.awt.Dimension(0, 20));
         menuBar.setMinimumSize(new java.awt.Dimension(0, 20));
@@ -302,8 +328,41 @@ public class AplicacionView extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktopPane;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel statusBar;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void setParentFrame(View v) {
+        parentFrame = (AplicacionView) v;
+    }
+
+    @Override
+    public View getParentFrame() {
+        return parentFrame;
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public void updateView() {
+        //TO-DO
+    }
+
+    @Override
+    public void bindEvents() {
+        //TO-DO
+    }
+    
+    
 
 }

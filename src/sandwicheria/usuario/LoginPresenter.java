@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sandwicheria.aplicacion.login;
+package sandwicheria.usuario;
 
-import sandwicheria.aplicacion.usuario.Cajero;
+import sandwicheria.usuario.Cajero;
 import javax.swing.JOptionPane;
 import sandwicheria.aplicacion.AplicacionView;
 import sandwicheria.persistencia.Repositorio;

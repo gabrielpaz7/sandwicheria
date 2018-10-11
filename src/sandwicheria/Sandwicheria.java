@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import sandwicheria.aplicacion.SplashView;
-import sandwicheria.aplicacion.usuario.Cajero;
+import sandwicheria.usuario.Cajero;
 import sandwicheria.persistencia.Repositorio;
 import sandwicheria.persistencia.Session;
 

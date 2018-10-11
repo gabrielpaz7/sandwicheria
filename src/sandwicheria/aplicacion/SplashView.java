@@ -5,11 +5,11 @@
  */
 package sandwicheria.aplicacion;
 
-import sandwicheria.aplicacion.login.LoginView;
+import sandwicheria.usuario.LoginView;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sandwicheria.aplicacion.AplicacionView;
-import sandwicheria.aplicacion.login.LoginPresenter;
+import sandwicheria.usuario.LoginPresenter;
 
 /**
  *

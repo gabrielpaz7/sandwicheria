@@ -5,7 +5,7 @@
  */
 package sandwicheria.persistencia;
 
-import sandwicheria.aplicacion.usuario.Usuario;
+import sandwicheria.usuario.Usuario;
 
 /**
  *
@@ -17,6 +17,7 @@ public class Session {
     
     public static void iniciar(){
         Session.isLogged = false;
+        usuario = null;
     }
 
     public static Usuario getUsuario() {
