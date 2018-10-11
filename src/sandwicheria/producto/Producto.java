@@ -119,14 +119,16 @@ public class Producto {
     public String getDetallesToString(){
         String str = "\n[";
         
-        for(Producto p : getDetalles()){
-            String detalle = "" 
-                + (p.isIncluido()? "✓" : "✕")
-                + " " + p.getDescripcion()                
-                +" - ";
-            
-            str += detalle;
-        }
+        if(getDetalles() != null){
+            for(Producto p : getDetalles()){
+                String detalle = "" 
+                    + (p.isIncluido()? "✓" : "✕")
+                    + " " + p.getDescripcion()                
+                    +" - ";
+
+                str += detalle;
+            }          
+        }      
         
         str += "\n]";
         

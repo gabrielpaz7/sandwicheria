@@ -249,7 +249,7 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
         
             if(confirm == JOptionPane.YES_OPTION){
                 presenter.getModel().getLineasPedido().remove(rowIndex);
-                tbLineasPedido.remove(rowIndex);
+                //tbLineasPedido.remove(rowIndex);
                updateView();
             }  
         } 
@@ -269,6 +269,8 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
         btnAgregarLinea.addActionListener(e -> agregarLineaPedido());
         
         btnEditarLineaPedido.addActionListener(e -> editarLineaPedido());
+        
+        btnBorrarLineaPedido.addActionListener(e -> borrarLineaPedido());
     }
     
     public void createView(JInternalFrame iframe){

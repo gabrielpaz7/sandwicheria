@@ -24,6 +24,11 @@ public class LineaPedido implements Model, Cloneable{
     public double getSubtotal(){
        double subtotal = 0.00; 
        double precio = producto.getPrecio();
+       cantidad = cantidad < 1 ? 1 : cantidad;
+       
+       if(producto.getDetalles() == null){
+           return precio * cantidad;
+       }
        
        double agregados = 0.00;
        for(Producto d : producto.getDetalles()) {
@@ -31,7 +36,7 @@ public class LineaPedido implements Model, Cloneable{
                agregados += d.getPrecio();
            }
        }
-       cantidad = cantidad < 1 ? 1 : cantidad;
+       
        
        subtotal = (precio + agregados) * cantidad;
 
