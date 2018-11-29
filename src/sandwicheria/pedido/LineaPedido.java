@@ -26,14 +26,14 @@ public class LineaPedido implements Model, Cloneable{
        double precio = producto.getPrecio();
        cantidad = cantidad < 1 ? 1 : cantidad;
        
-       if(producto.getDetalles() == null){
+       if(producto.getDetalles() == null || producto.getDetalles().size() <= 0){
            return precio * cantidad;
        }
        
        double agregados = 0.00;
        for(Producto d : producto.getDetalles()) {
            if (d.isAgregado() && d.isIncluido()) {
-               agregados += d.getPrecio();
+               agregados += d.getPrecio() < 0 ? 0 : d.getPrecio();
            }
        }
        
@@ -62,6 +62,10 @@ public class LineaPedido implements Model, Cloneable{
     @Override
     public String toString() {
         return String.format("\nProducto: %s \nCantidad: %d", producto, cantidad);
+    }
+    
+    public void addProductoDetalle(Producto detalle){
+        getProducto().getDetalles().add(detalle);
     }
     
     

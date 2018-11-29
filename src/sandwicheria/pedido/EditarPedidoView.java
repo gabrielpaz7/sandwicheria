@@ -7,6 +7,8 @@ package sandwicheria.pedido;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
@@ -17,6 +19,8 @@ import javax.swing.table.TableModel;
 import sandwicheria.Presenter;
 import sandwicheria.View;
 import sandwicheria.aplicacion.AplicacionView;
+import sandwicheria.producto.BuscarProductoPresenter;
+import sandwicheria.producto.BuscarProductoView;
 import sandwicheria.producto.Producto;
 
 /**
@@ -27,6 +31,7 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
     
     AplicacionView parentFrame;
     EditarPedidoPresenter presenter;
+    Producto producto;
 
     /**
      * Creates new form EditarPedidoView
@@ -34,6 +39,8 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
     public EditarPedidoView() {
         initComponents();
         this.bindEvents();
+        
+        fdCodigo.requestFocus();
     }
 
     @Override
@@ -70,12 +77,12 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
     @Override
     public void bindEvents() {
         
+        fdCodigo.addActionListener(e -> buscarProductoPorCodigo());
+
         fdCantidad.addChangeListener((ChangeEvent e) -> {
             setCantidad();
         });
-        
-              
-        
+
         btnGuardarDetallesProducto.addActionListener(e -> {
             dispose();
         });
@@ -83,6 +90,10 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
         btnCancelar.addActionListener(e -> { 
             dispose();
         });
+        
+        btnAddProductoDetalle.addActionListener(e -> agregarProductoDetalle());
+        
+        btnBuscarProducto.addActionListener(e -> buscarProducto());
         
     }
     
@@ -101,10 +112,30 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
         LineaPedido model = presenter.getModel();
         Producto producto = model.getProducto().getDetalles().get(productoIndex);
         
+        if(producto.isAgregado() && value == false){
+        
+            borrarDetalleProducto(productoIndex);
+            //return;
+        }
+        
         producto.setIncluido(value);
 
         updateView();
     }  
+      
+     private void borrarDetalleProducto(int productoIndex){
+         LineaPedido model = presenter.getModel();
+         
+         if(productoIndex > -1){
+                int confirm = JOptionPane.showConfirmDialog(this, "borrar detalle?", "Confirmar", 0);
+
+                if(confirm == JOptionPane.YES_OPTION){
+                    model.getProducto().getDetalles().remove(productoIndex);
+                    //tbLineasPedido.remove(rowIndex);
+                   //updateView();
+                }  
+            } 
+     } 
     
     private void mostrarDetalles(LineaPedido lineaPedido){
         //DefaultTableModel tableModel = (DefaultTableModel) tbDetallesProducto.getModel();
@@ -180,6 +211,62 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
         tbDetallesProducto.setModel(tableModel); 
     }
     
+    
+    private void buscarProductoPorCodigo(){
+        
+        int codigo = Integer.valueOf(fdCodigo.getText());
+        System.out.println("Codigo: " + codigo);
+
+        this.producto = presenter.buscarProductoPorCodigo(codigo);
+        //System.out.println(producto.toString());
+
+        if(this.producto != null){
+            fdDescripcion.setText(this.producto.getDescripcion());
+            fdPrecio.setText(String.valueOf(this.producto.getPrecio()));
+            fdCantidad.setValue(1);
+
+            btnAddProductoDetalle.requestFocus();
+        }else{
+            JOptionPane.showMessageDialog(this, "Codigo inexistente");
+        }   
+    }
+    
+    private void buscarProducto(){
+        //Producto model = new Producto();
+        BuscarProductoView view = new BuscarProductoView(parentFrame, true);        
+        Presenter buscarProductoPresenter = new BuscarProductoPresenter(producto, view);
+        
+        producto  = view.getProducto();
+
+        if(producto != null){
+            fdCodigo.setText(String.valueOf(producto.getCodigo()));
+            fdDescripcion.setText(producto.getDescripcion());
+            fdPrecio.setText(String.valueOf(producto.getPrecio()));
+            fdCantidad.setValue(1);
+
+            tbDetallesProducto.requestFocus();
+        }else{
+            JOptionPane.showMessageDialog(this, "Producto inexistente");
+        }        
+    }    
+    
+    private void agregarProductoDetalle(){
+        if(producto != null){
+            presenter.addProductoDetalle(producto);
+            
+            fdCodigo.setText("");
+            fdDescripcion.setText("");
+            fdPrecio.setText("");
+            
+            fdCodigo.requestFocus();
+            producto = null;
+        }else{
+            JOptionPane.showMessageDialog(this, "Seleccione un producto para agregar");
+        }
+        
+        updateView();
+    }
+    
 
 
     /**
@@ -229,7 +316,7 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         fdCodigo = new javax.swing.JTextField();
-        btnProductoDetalle = new javax.swing.JButton();
+        btnAddProductoDetalle = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         fdPrecio = new javax.swing.JTextField();
@@ -336,6 +423,7 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Producto", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
         fdLineaPedidoDescripcion.setEditable(false);
+        fdLineaPedidoDescripcion.setBorder(null);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -380,10 +468,10 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
 
         jLabel3.setText("Cod.");
 
-        btnProductoDetalle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/add_16.png"))); // NOI18N
-        btnProductoDetalle.setText("Agregar");
-        btnProductoDetalle.setToolTipText("Agregar producto");
-        btnProductoDetalle.setActionCommand("btnAgregarProducto");
+        btnAddProductoDetalle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sandwicheria/resources/add_16.png"))); // NOI18N
+        btnAddProductoDetalle.setText("Agregar");
+        btnAddProductoDetalle.setToolTipText("Agregar producto");
+        btnAddProductoDetalle.setActionCommand("btnAgregarProducto");
 
         jLabel4.setText("Descripción");
 
@@ -423,9 +511,8 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(fdDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 17, Short.MAX_VALUE)
-                .addComponent(btnBuscarProducto))
+            .addComponent(btnBuscarProducto)
+            .addComponent(fdDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -451,7 +538,7 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(fdPrecio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnProductoDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddProductoDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
         jPanel3Layout.setVerticalGroup(
@@ -472,7 +559,7 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(fdPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnProductoDetalle)))
+                        .addComponent(btnAddProductoDetalle)))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -529,10 +616,10 @@ public class EditarPedidoView extends javax.swing.JInternalFrame implements View
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddProductoDetalle;
     private javax.swing.JButton btnBuscarProducto;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnGuardarDetallesProducto;
-    private javax.swing.JButton btnProductoDetalle;
     private javax.swing.JSpinner fdCantidad;
     private javax.swing.JTextField fdCodigo;
     private javax.swing.JTextField fdDescripcion;

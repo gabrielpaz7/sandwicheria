@@ -6,12 +6,13 @@
 package sandwicheria.producto;
 
 import java.util.ArrayList;
+import sandwicheria.Model;
 
 /**
  *
  * @author Gabriel
  */
-public class Producto {
+public class Producto implements Model, Cloneable{
     int codigo;
     String descripcion;
     boolean agregado;
@@ -134,5 +135,34 @@ public class Producto {
         
         return str;
     }
+
+    @Override
+    public Producto clone() throws CloneNotSupportedException {
+        Producto producto = new Producto();
+        producto.codigo = codigo;
+        producto.descripcion = descripcion;
+        producto.agregado = agregado;
+        producto.rubro = rubro;
+        producto.stock = stock;
+        producto.incluido = incluido;
+        producto.precio = precio;
+        
+        ArrayList<Producto> productoDetalles = new ArrayList<Producto>();
+        
+        if(detalles != null && detalles.size() >= 0){
+            
+            for(Producto detalle : detalles){
+                Producto p = detalle.clone();
+                productoDetalles.add(p);
+            }
+        }
+        
+        producto.detalles = productoDetalles;
+        
+        return producto;
+    }
+
+
+    
     
 }

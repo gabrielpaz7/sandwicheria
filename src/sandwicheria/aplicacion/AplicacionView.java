@@ -77,6 +77,7 @@ public class AplicacionView extends javax.swing.JFrame implements View{
         crearMenuInicio();
         crearMenuPedido();
         //crearMenuUsuarios();
+        crearMenuTurno();
         crearMenuAyuda();
         crearMenuUsuario();
     }
@@ -361,6 +362,51 @@ public class AplicacionView extends javax.swing.JFrame implements View{
     @Override
     public void bindEvents() {
         //TO-DO
+    }
+
+    private void crearMenuTurno() {
+        //List Menu Items
+        ArrayList<JMenuItem> items = new ArrayList<JMenuItem>();
+        JMenuItem item;
+
+        //INICIAR TURNO
+        item= new JMenuItem();
+        item.setText("Iniciar Turno");
+        item.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Pedido model = new Pedido();
+                CrearPedidoView view = new CrearPedidoView();
+                Presenter presenter = new CrearPedidoPresenter(view, model);
+                view.setParentFrame(parentFrame);
+                crearVentana(view);
+                
+            }
+        });
+        items.add(item);
+        
+        
+
+        //INICIAR TURNO
+        item= new JMenuItem();
+        item.setText("Cerrar Turno");
+        item.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Pedido model = new Pedido();
+                CrearPedidoView view = new CrearPedidoView();
+                Presenter presenter = new CrearPedidoPresenter(view, model);
+                view.setParentFrame(parentFrame);
+                crearVentana(view);
+                
+            }
+        });
+        items.add(item);
+        
+        //Menu
+        crearMenu("Turno", "/sandwicheria/resources/cog_16.png", items);
     }
     
     

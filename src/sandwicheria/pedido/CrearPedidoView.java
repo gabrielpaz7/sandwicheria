@@ -8,27 +8,43 @@ package sandwicheria.pedido;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.Timer;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
 import sandwicheria.Presenter;
 import sandwicheria.View;
 import sandwicheria.aplicacion.AplicacionView;
 import sandwicheria.persistencia.Session;
 import sandwicheria.producto.Producto;
 import sandwicheria.librerias.StripedTable;
+import sandwicheria.producto.BuscarProductoPresenter;
+import sandwicheria.producto.BuscarProductoView;
 
 /**
  *
@@ -49,7 +65,9 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
         
         
         this.mostrarInfoTerminal();
-        this.bindEvents();        
+        this.bindEvents();  
+        
+        producto = new Producto();
     }
 
     @Override
@@ -71,6 +89,10 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
 
         txtTotal.setText(String.format("$%,.2f", presenter.getModel().calcularTotal()));
         mostrarTablaLineasPedido();
+        
+        panelDetalleProducto.removeAll();
+        panelDetalleProducto.revalidate();
+        panelDetalleProducto.repaint();
         
         fdCodigo.requestFocus();
     }
@@ -108,28 +130,41 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
     }
     
     private void buscarProductoPorCodigo(){
+        
         int codigo = Integer.valueOf(fdCodigo.getText());
         System.out.println("Codigo: " + codigo);
-        
-        producto = presenter.buscarProductoPorCodigo(codigo);
+
+        producto = (Producto) presenter.buscarProductoPorCodigo(codigo);
         //System.out.println(producto.toString());
-        
+
         if(producto != null){
             fdDescripcion.setText(producto.getDescripcion());
             fdPrecio.setText(String.valueOf(producto.getPrecio()));
             fdCantidad.setValue(1);
-        
-            fdCantidad.requestFocus();
+
+            btnAgregarLinea.requestFocus();
         }else{
             JOptionPane.showMessageDialog(this, "Codigo inexistente");
-        }
-        
-        
-        
+        }   
     }
     
     private void buscarProducto(){
-        //abrir interfaz
+        //Producto model = new Producto();
+        BuscarProductoView view = new BuscarProductoView(parentFrame, true);        
+        Presenter buscarProductoPresenter = new BuscarProductoPresenter(producto, view);
+        
+        producto  = view.getProducto();
+
+        if(producto != null){
+            fdCodigo.setText(String.valueOf(producto.getCodigo()));
+            fdDescripcion.setText(producto.getDescripcion());
+            fdPrecio.setText(String.valueOf(producto.getPrecio()));
+            fdCantidad.setValue(1);
+
+            btnAgregarLinea.requestFocus();
+        }else{
+            JOptionPane.showMessageDialog(this, "Producto inexistente");
+        }        
     }
     
     private void agregarLineaPedido(){
@@ -143,6 +178,7 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
 
             producto = null;
             this.updateView();
+            
         }else{
             JOptionPane.showMessageDialog(this, "Producto/cantidad incorrectos.");
         }        
@@ -183,8 +219,21 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
             
             tableModel.addRow(object);
         }
+         
+        tbLineasPedido.setModel(tableModel);
+        /*
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tbLineasPedido.getModel());
+        sorter.setSortable(0, false);      
+        tbLineasPedido.setRowSorter(sorter);
+        */
         
-        tbLineasPedido.setModel(tableModel);        
+        tbLineasPedido.setRowSorter(new TableRowSorter(tableModel){
+            @Override
+            public boolean isSortable(int column) {
+                return false; //To change body of generated methods, choose Tools | Templates.
+            }
+            
+        });
     }
     
     private void editarLineaPedido() {
@@ -255,6 +304,33 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
         } 
     }
     
+    private void showDetallesProducto(){
+        int rowIndex = tbLineasPedido.getSelectedRow();
+        System.out.println("showDetallesProducto() called.");
+        
+        panelDetalleProducto.removeAll();
+        panelDetalleProducto.revalidate();
+        panelDetalleProducto.repaint();
+        
+        panelDetalleProducto.setLayout(new BoxLayout(panelDetalleProducto, BoxLayout.Y_AXIS));
+        
+        if(rowIndex > -1){
+            System.out.println("showDetallesProducto() -> rowIndex > -1.");
+            
+            LineaPedido model = presenter.getModel().getLineasPedido().get(rowIndex);
+            for(Producto detalle : model.getProducto().getDetalles()){
+                String str = (detalle.isIncluido()? "✓" : "✕") + " - " + detalle.getDescripcion();
+                JLabel txtDetalle = new JLabel(str);
+                
+                System.out.println(txtDetalle.getText());
+                panelDetalleProducto.add(txtDetalle);
+            }
+            
+            panelDetalleProducto.revalidate();
+            panelDetalleProducto.repaint();
+        } 
+    }
+    
     @Override
     public void bindEvents(){
         /*fdCodigo.addActionListener(new ActionListener() {
@@ -271,6 +347,51 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
         btnEditarLineaPedido.addActionListener(e -> editarLineaPedido());
         
         btnBorrarLineaPedido.addActionListener(e -> borrarLineaPedido());
+        
+        tbLineasPedido.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showDetallesProducto();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        
+        tbLineasPedido.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                //
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //              
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN){
+                    showDetallesProducto();
+                }  
+            }
+        });
+        
+        btnBuscarProducto.addActionListener(e -> buscarProducto());
     }
     
     public void createView(JInternalFrame iframe){
@@ -343,6 +464,7 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
         jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        panelDetalleProducto = new javax.swing.JPanel();
 
         setClosable(true);
         setIconifiable(true);
@@ -400,7 +522,7 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
                     .addComponent(btnEditarLineaPedido)
                     .addComponent(btnBorrarLineaPedido))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollPaneLineasPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(scrollPaneLineasPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -674,7 +796,20 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(21, 21, 21)))
-                .addContainerGap(160, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        panelDetalleProducto.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Detalles Producto", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        javax.swing.GroupLayout panelDetalleProductoLayout = new javax.swing.GroupLayout(panelDetalleProducto);
+        panelDetalleProducto.setLayout(panelDetalleProductoLayout);
+        panelDetalleProductoLayout.setHorizontalGroup(
+            panelDetalleProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        panelDetalleProductoLayout.setVerticalGroup(
+            panelDetalleProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -697,7 +832,8 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(panelTotales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelDetalleProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -711,7 +847,9 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panelDetalleProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAceptarPedido)
@@ -753,6 +891,7 @@ public class CrearPedidoView extends javax.swing.JInternalFrame implements View{
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel lbCodigoTributario;
+    private javax.swing.JPanel panelDetalleProducto;
     private javax.swing.JPanel panelHeader;
     private javax.swing.JPanel panelLineasPedido;
     private javax.swing.JPanel panelTerminal;

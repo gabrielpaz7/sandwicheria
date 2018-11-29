@@ -5,6 +5,8 @@
  */
 package sandwicheria.usuario;
 
+import sandwicheria.turno.Turno;
+
 /**
  *
  * @author Gabriel

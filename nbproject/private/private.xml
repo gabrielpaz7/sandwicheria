@@ -3,12 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/turno/AbrirTurnoView.java</file>
             <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/aplicacion/AplicacionView.java</file>
-            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/pedido/LineaPedido.java</file>
+            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/cliente/Cliente.java</file>
+            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/turno/CerrarTurnoView.java</file>
+            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/producto/BuscarProductoView.java</file>
+            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/usuario/LoginView.java</file>
+            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/turno/Turno.java</file>
             <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/pedido/CrearPedidoView.java</file>
-            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/pedido/EditarPedidoPresenter.java</file>
             <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/pedido/EditarPedidoView.java</file>
-            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/Presenter.java</file>
+            <file>file:/D:/Google%20Drive/UTN-FRT/Ingenieria%20de%20Software/2018/sandwicheria/src/sandwicheria/cliente/BuscarClienteView.java</file>
         </group>
     </open-files>
 </project-private>

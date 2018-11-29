@@ -8,6 +8,8 @@ package sandwicheria.pedido;
 import sandwicheria.Model;
 import sandwicheria.Presenter;
 import sandwicheria.View;
+import sandwicheria.persistencia.Repositorio;
+import sandwicheria.producto.Producto;
 
 /**
  *
@@ -53,6 +55,19 @@ public class EditarPedidoPresenter implements Presenter{
     @Override
     public void updateModel() {
         //TO-DO
+    }
+    
+    public Producto buscarProductoPorCodigo(int codigo){
+        for(Producto p : Repositorio.getProductos()){
+            if(p.getCodigo() == codigo){
+                return p;
+            }
+        }
+        return null;
+    }
+    
+    public void addProductoDetalle(Producto detalle){
+        model.addProductoDetalle(detalle);
     }
         
     
