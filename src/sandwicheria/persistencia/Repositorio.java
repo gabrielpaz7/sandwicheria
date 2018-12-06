@@ -32,7 +32,8 @@ public class Repositorio {
         iniciarCajeros();
         iniciarubros();
         iniciarProductos();
-        iniciarClientes();        
+        iniciarClientes();
+        iniciarPedidos();
     }
     
     private static void iniciarCajeros(){

@@ -19,6 +19,11 @@ public class EditarPedidoPresenter implements Presenter{
     LineaPedido model;
     EditarPedidoView view;
 
+    public EditarPedidoPresenter(LineaPedido model) {
+        this.model = model;
+    }
+
+    
     public EditarPedidoPresenter(LineaPedido model, EditarPedidoView view) {
         this.model = model;
         this.view = view;

@@ -19,6 +19,13 @@ public class CrearPedidoPresenter implements Presenter{
     Pedido model;
     CrearPedidoView view;
 
+    public CrearPedidoPresenter() {
+    }
+
+    public CrearPedidoPresenter(Pedido model) {
+        this.model = model;
+    }
+        
     public CrearPedidoPresenter(CrearPedidoView view, Pedido pedido) {
         this.view = view;
         this.model = pedido;
